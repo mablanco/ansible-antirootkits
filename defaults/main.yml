@@ -1,0 +1,4 @@
+---
+# defaults file for mablanco.antirootkits
+antirootkits_mail_from: ''
+antirootkits_mail_rcpt: ''

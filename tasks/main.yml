@@ -1,0 +1,60 @@
+---
+# tasks file for mablanco.antirootkits
+
+- name: install tools
+  apt: name={{ item }} state=latest update_cache=yes
+  with_items:
+  - rkhunter
+  - chkrootkit
+  - unhide
+#  - libpam-cracklib
+#  - wspanish
+
+- name: rkhunter | enable cron scheduled runs
+  lineinfile:
+    dest: "/etc/default/rkhunter"
+    regexp: "^CRON_DAILY_RUN="
+    line: "CRON_DAILY_RUN=\"true\""
+    state: present
+
+- name: rkhunter | setup receiver email address for reports
+  lineinfile:
+    dest: "/etc/default/rkhunter"
+    regexp: "^REPORT_EMAIL="
+    line: "REPORT_EMAIL=\"{{ antirootkits_mail_rcpt }}\""
+    state: present
+
+- name: rkhunter | enable receiver email address for warnings
+  lineinfile:
+    dest: "/etc/rkhunter.conf"
+    regexp: "^#MAIL-ON-WARNING="
+    line: "MAIL-ON-WARNING=\"{{ antirootkits_mail_rcpt }}\""
+    backrefs: yes
+    state: present
+
+- name: rkhunter | remove void receiver email address for warnings (if present)
+  lineinfile:
+    dest: "/etc/rkhunter.conf"
+    regexp: "^MAIL-ON-WARNING=\"\"$"
+    state: absent
+
+- name: rkhunter | setup receiver email address for warnings
+  lineinfile:
+    dest: "/etc/rkhunter.conf"
+    regexp: "^MAIL-ON-WARNING="
+    line: "MAIL-ON-WARNING=\"{{ antirootkits_mail_rcpt }}\""
+    state: present
+
+- name: rkhunter | whitelist /dev/shm/network/ifstate
+  lineinfile:
+    dest: "/etc/rkhunter.conf"
+    insertafter: "^#ALLOWDEVFILE="
+    line: "ALLOWDEVFILE=\"/dev/shm/network/ifstate\""
+    state: present
+
+- name: chkrootkit | enable daily scheduled runs
+  lineinfile:
+    dest: "/etc/chkrootkit.conf"
+    regexp: "^RUN_DAILY="
+    line: "RUN_DAILY=\"true\""
+    state: present
