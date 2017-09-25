@@ -7,14 +7,19 @@
   - rkhunter
   - chkrootkit
   - unhide
-#  - libpam-cracklib
-#  - wspanish
 
 - name: rkhunter | enable cron scheduled runs
   lineinfile:
     dest: "/etc/default/rkhunter"
     regexp: "^CRON_DAILY_RUN="
     line: "CRON_DAILY_RUN=\"true\""
+    state: present
+
+- name: rkhunter | enable weekly database updates
+  lineinfile:
+    dest: "/etc/default/rkhunter"
+    regexp: "^CRON_DB_UPDATE="
+    line: "CRON_DB_UPDATE=\"true\""
     state: present
 
 - name: rkhunter | setup receiver email address for reports
