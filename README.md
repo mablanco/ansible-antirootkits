@@ -17,7 +17,7 @@ Example of how to use this role:
 - hosts: debian_servers
   vars:
      antirootkits_mail_from: 'sender@example.com'
-     antirootkits_mail_rcpt: 'receiver@example.com'
+     antirootkits_mail_to: 'receiver@example.com'
   roles:
      - { role: mablanco.antirootkits }
 ```
