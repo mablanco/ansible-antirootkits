@@ -7,7 +7,7 @@ Only Debian and Ubuntu are supported, right now.
 ## Role Variables
 
 - **antirootkits_mail_from**: Sender email address for the audit reports. No valid default, you have to fill it in.
-- **antirootkits_mail_rcpt**: Receiver email address for the audit reports. No valid default, you have to fill it in.
+- **antirootkits_mail_to**: Receiver email address for the audit reports. No valid default, you have to fill it in.
 
 ## Example Playbook
 
