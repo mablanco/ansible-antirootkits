@@ -10,7 +10,7 @@
 - name: antirootkits_mail_to should be defined
   assert:
     that:
-    - antirootkits_mail_to is defined and lynis_report_to != ''
+    - antirootkits_mail_to is defined and antirootkits_mail_to != ''
     msg: "Set the value of 'antirootkits_mail_to' in either the inventory file or the playbook invoking this role."
 
 - name: install tools
@@ -75,3 +75,37 @@
     regexp: "^RUN_DAILY="
     line: "RUN_DAILY=\"true\""
     state: present
+
+- name: Shell Detector | install tool
+  get_url:
+    dest: /usr/local/bin
+    url: https://raw.github.com/emposha/Shell-Detector/master/shelldetect.py
+    owner: root
+    group: root
+    mode: 0750
+
+- name: Shell Detector | create log directory
+  file:
+    path: /var/log/shelldetector
+    mode: 0750
+    owner: root
+    group: root
+    state: directory
+
+- name: Shell Detector | install cron job
+  template:
+    src: shelldetector.cron.j2
+    dest: /usr/local/bin/shelldetector_cron.sh
+    owner: root
+    group: root
+    mode: 0750
+
+- name: Shell Detector | creates daily cronjob
+  cron:
+    name: "Launch Shell Detector audit"
+    hour: "{{ shelldetector_cron_hour }}"
+    minute: "{{ shelldetector_cron_minute }}"
+    weekday: "*"
+    cron_file: "shelldetector"
+    user: "root"
+    job: "/usr/local/bin/shelldetector_cron.sh 2>&1 | logger"
