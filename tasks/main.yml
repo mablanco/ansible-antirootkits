@@ -76,6 +76,28 @@
     line: "RUN_DAILY=\"true\""
     state: present
 
+- name: Antirootkits | chkrootkit | setup receiver email address for reports
+  lineinfile:
+    dest: "/etc/chkrootkit.conf"
+    line: "REPORT_EMAIL=\"{{ antirootkits_mail_to }}\""
+    state: present
+
+- name: Antirootkits | chkrootkit | install logrotate config
+  template:
+    src: chkrootkit.logrotate
+    dest: /etc/logrotate.d/chkrootkit
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Antirootkits | chkrootkit | install cron job
+  template:
+    src: chkrootkit.cron.j2
+    dest: /etc/cron.daily/chkrootkit
+    owner: root
+    group: root
+    mode: 0755
+
 - name: Antirootkits | Shell Detector | install tool
   get_url:
     dest: /usr/local/bin
@@ -92,7 +114,7 @@
     group: root
     state: directory
 
-- name: Antirootkits | Shell Detector | install cron job
+- name: Antirootkits | Shell Detector | install cron script
   template:
     src: shelldetector.cron.j2
     dest: /usr/local/bin/shelldetector_cron.sh

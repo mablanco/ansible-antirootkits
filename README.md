@@ -33,8 +33,8 @@ Example of how to use this role:
 
 ## ToDo
 
-- Send email reports from chkrootkit and unhide
-- Schedule unhide runs
+- Schedule unhide runs and send email reports
+- Add more tools!
 
 ## License
 

@@ -1,0 +1,8 @@
+/var/log/chkrootkit/*.log {
+  daily
+  rotate 15
+  dateext
+  delaycompress
+  missingok
+  notifempty
+}
