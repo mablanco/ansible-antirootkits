@@ -14,11 +14,13 @@
     msg: "Set the value of 'antirootkits_mail_to' in either the inventory file or the playbook invoking this role."
 
 - name: Antirootkits | install tools from Debian/Ubuntu repos
-  apt: name={{ item }} state=latest update_cache=yes
-  with_items:
-  - rkhunter
-  - chkrootkit
-  - unhide
+  apt:
+    name:
+    - rkhunter
+    - chkrootkit
+    - unhide
+    state: present
+    update_cache: yes
 
 - name: Antirootkits | rkhunter | enable cron scheduled runs
   lineinfile:
