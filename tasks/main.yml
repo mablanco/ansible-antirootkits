@@ -26,26 +26,50 @@
 - name: Antirootkits | rkhunter
   block:
 
-  - name: Antirootkits | rkhunter | enable cron scheduled runs
-    lineinfile:
-      dest: "/etc/default/rkhunter"
-      regexp: "^CRON_DAILY_RUN="
-      line: "CRON_DAILY_RUN=\"true\""
-      state: present
+  - name: Antirootkits | rkhunter | Debian specifics
+    block:
 
-  - name: Antirootkits | rkhunter | enable weekly database updates
-    lineinfile:
-      dest: "/etc/default/rkhunter"
-      regexp: "^CRON_DB_UPDATE="
-      line: "CRON_DB_UPDATE=\"true\""
-      state: present
+    - name: Antirootkits | rkhunter | enable cron scheduled runs
+      lineinfile:
+        dest: "/etc/default/rkhunter"
+        regexp: "^CRON_DAILY_RUN="
+        line: "CRON_DAILY_RUN=\"true\""
+        state: present
 
-  - name: Antirootkits | rkhunter | setup receiver email address for reports
-    lineinfile:
-      dest: "/etc/default/rkhunter"
-      regexp: "^REPORT_EMAIL="
-      line: "REPORT_EMAIL=\"{{ antirootkits_mail_to }}\""
-      state: present
+    - name: Antirootkits | rkhunter | enable weekly database updates
+      lineinfile:
+        dest: "/etc/default/rkhunter"
+        regexp: "^CRON_DB_UPDATE="
+        line: "CRON_DB_UPDATE=\"true\""
+        state: present
+
+    - name: Antirootkits | rkhunter | setup receiver email address for reports
+      lineinfile:
+        dest: "/etc/default/rkhunter"
+        regexp: "^REPORT_EMAIL="
+        line: "REPORT_EMAIL=\"{{ antirootkits_mail_to }}\""
+        state: present
+
+    when: ansible_os_family == "Debian"
+
+  - name: Antirootkits | rkhunter | RedHat specifics
+    block:
+
+    - name: Antirootkits | rkhunter | setup report scan level
+      lineinfile:
+        dest: "/etc/sysconfig/rkhunter"
+        regexp: "^DIAG_SCAN="
+        line: "DIAG_SCAN=\"{{ antirootkits_rkhunter_diag_scan }}\""
+        state: present
+
+    - name: Antirootkits | rkhunter | setup receiver email address for reports
+      lineinfile:
+        dest: "/etc/sysconfig/rkhunter"
+        regexp: "^MAILTO="
+        line: "MAILTO=\"{{ antirootkits_mail_to }}\""
+        state: present
+
+    when: ansible_os_family == "RedHat"
 
   - name: Antirootkits | rkhunter | enable receiver email address for warnings
     lineinfile:

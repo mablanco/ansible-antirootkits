@@ -9,3 +9,4 @@ antirootkits_chkrootkit_enabled: false
 antirootkits_unhide_enabled: false
 antirootkits_shelldetector_enabled: true
 
+antirootkits_rkhunter_diag_scan: no
