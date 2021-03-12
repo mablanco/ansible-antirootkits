@@ -1,0 +1,8 @@
+---
+# vars file for mablanco.antirootkits
+
+antirootkits_pkg_list:
+  - rkhunter
+  - chkrootkit
+  - unhide
+
