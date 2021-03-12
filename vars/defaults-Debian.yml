@@ -6,3 +6,8 @@ antirootkits_pkg_list:
   - chkrootkit
   - unhide
 
+antirootkits_rkhunter_enabled: true
+antirootkits_chkrootkit_enabled: true
+antirootkits_unhide_enabled: true
+antirootkits_shelldetector_enabled: true
+
