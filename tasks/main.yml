@@ -99,6 +99,11 @@
       line: "ALLOWDEVFILE=\"/dev/shm/network/ifstate\""
       state: present
 
+  - name: Antirootkits | rkhunter | run propupd
+    command: /usr/bin/rkhunter --propupd
+    args:
+      creates: /var/lib/rkhunter/db/rkhunter.dat
+
   when: antirootkits_rkhunter_enabled
   tags: [ 'rkhunter' ]
 
