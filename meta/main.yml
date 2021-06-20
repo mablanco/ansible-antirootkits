@@ -14,9 +14,7 @@ galaxy_info:
     - all
   - name: Ubuntu
     versions:
-    - trusty
-    - xenial
-    - zesty
+    - all
 
   galaxy_tags:
     - security
