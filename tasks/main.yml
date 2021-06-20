@@ -181,4 +181,3 @@
 
   when: antirootkits_shelldetector_enabled
   tags: [ 'shelldetector' ]
-
