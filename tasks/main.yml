@@ -147,7 +147,7 @@
 
   - name: Antirootkits | Shell Detector | install tool
     get_url:
-      dest: /usr/local/bin
+      dest: /usr/local/bin/
       url: https://raw.github.com/emposha/Shell-Detector/master/shelldetect.py
       owner: root
       group: root
