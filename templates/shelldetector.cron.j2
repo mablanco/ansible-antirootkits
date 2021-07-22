@@ -9,10 +9,10 @@ LOG_EXPIRE={{ antirootkits_log_expire }}
 
 FROM="{{ antirootkits_mail_from }}"
 TO="{{ antirootkits_mail_to }}"
+SUBJECT="${HOST}: Shell Detector audit (${DATE})"
 
 python /usr/local/bin/shelldetect.py -r True -d {{ shelldetector_scan_directory }} > ${REPORT}
 
 find $LOG_DIR -type f -mtime +$LOG_EXPIRE -delete -print
 
-echo "Shell Detector audit for ${HOST} on ${DATE}: ${REPORT}" |
-/usr/bin/mail -s "${HOST}: Shell Detector audit (${DATE})" -r ${FROM} -a ${REPORT} ${TO}
+echo "Shell Detector audit for ${HOST} on ${DATE}: ${REPORT}" | {{ antirootkits_mail_cmd }}
