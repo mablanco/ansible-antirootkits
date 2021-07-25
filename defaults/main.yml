@@ -13,6 +13,7 @@ unhide: false
 shelldetector: false
 
 # Shell Detector setup
+shelldetector_install_directory: '/opt/Shell-Detector'
 shelldetector_scan_directory: '/var/www'
 shelldetector_cron_hour: '6'
 shelldetector_cron_minute: '30'

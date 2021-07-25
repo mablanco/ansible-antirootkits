@@ -1,12 +1,12 @@
 ---
 
 - name: Shell Detector | install tool
-  get_url:
-    dest: /usr/local/bin/
-    url: https://raw.github.com/emposha/Shell-Detector/master/shelldetect.py
-    owner: root
-    group: root
-    mode: 0750
+  git:
+    repo: https://github.com/emposha/Shell-Detector.git
+    dest: "{{ shelldetector_install_directory }}"
+    clone: yes
+    force: yes
+    depth: 1
 
 - name: Shell Detector | create log directory
   file:
@@ -19,7 +19,7 @@
 - name: Shell Detector | install cron script
   template:
     src: shelldetector.cron.j2
-    dest: /usr/local/bin/shelldetector_cron.sh
+    dest: "{{ shelldetector_install_directory }}/shelldetector_cron.sh"
     owner: root
     group: root
     mode: 0750
@@ -32,4 +32,4 @@
     weekday: "*"
     cron_file: "shelldetector"
     user: "root"
-    job: "/usr/local/bin/shelldetector_cron.sh 2>&1 | logger"
+    job: "{{ shelldetector_install_directory }}/shelldetector_cron.sh 2>&1 | logger"

@@ -15,6 +15,7 @@
 
 - name: Antirootkits | load OS Family specific defaults
   include_vars: "{{ ansible_os_family|lower }}.yml"
+  tags: [ 'rkhunter', 'chkrootkit', 'shelldetector']
 
 - name: Antirootkits | Rkhunter
   include: rkhunter.yml
