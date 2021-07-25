@@ -10,3 +10,5 @@ antirootkits_rkhunter_enabled: true
 antirootkits_chkrootkit_enabled: true
 antirootkits_unhide_enabled: true
 antirootkits_shelldetector_enabled: true
+
+antirootkits_mail_cmd: '/usr/bin/mail -s "${SUBJECT}" -r ${FROM} -A ${REPORT} ${TO}'

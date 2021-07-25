@@ -22,6 +22,7 @@ The role can be used to deploy only a few of all the supported tools:
 - **antirootkits_shelldetector_enabled**: wether to deploy shelldetector
 - **antirootkits_pkg_list**: list of packages to install (varies between Debian and RHEL)
 
+- **antirootkits_mail_cmd**: Command to send reports (varies between Debian and RHEL)
 - **antirootkits_mail_from**: Sender email address for the audit reports. No valid default, you have to fill it in.
 - **antirootkits_mail_to**: Receiver email address for the audit reports. No valid default, you have to fill it in.
 - **antirootkits_log_expire**: Days before logs are purged. Defaults to _'90'_.
