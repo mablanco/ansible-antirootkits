@@ -11,7 +11,7 @@ FROM="{{ antirootkits_mail_from }}"
 TO="{{ antirootkits_mail_to }}"
 SUBJECT="${HOST}: Shell Detector audit (${DATE})"
 
-python /usr/local/bin/shelldetect.py -r True -d {{ shelldetector_scan_directory }} > ${REPORT}
+python {{ shelldetector_install_directory }}/shelldetect.py -r True -d {{ shelldetector_scan_directory }} > ${REPORT}
 
 find $LOG_DIR -type f -mtime +$LOG_EXPIRE -delete -print
 
