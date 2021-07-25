@@ -12,7 +12,7 @@ TO="{{ antirootkits_mail_to }}"
 SUBJECT="${HOST}: Unhide audit (${DATE})"
 
 cd $LOG_DIR
-unhide -m -f -d sys procall brute reverse
+/usr/sbin/unhide -m -f -d sys procall brute reverse
 
 find $LOG_DIR -type f -mtime +$LOG_EXPIRE -delete -print
 
