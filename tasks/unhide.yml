@@ -1,0 +1,7 @@
+---
+
+- name: Unhide | install tool from repo
+  package:
+    name: unhide
+    state: present
+    update_cache: yes

@@ -1,0 +1,36 @@
+---
+
+- name: chkrootkit | install tool from repo
+  package:
+    name: chkrootkit
+    state: present
+    update_cache: yes
+
+- name: chkrootkit | enable daily scheduled runs
+  lineinfile:
+    dest: "/etc/chkrootkit.conf"
+    regexp: "^RUN_DAILY="
+    line: "RUN_DAILY=\"true\""
+    state: present
+
+- name: chkrootkit | setup receiver email address for reports
+  lineinfile:
+    dest: "/etc/chkrootkit.conf"
+    line: "REPORT_EMAIL=\"{{ antirootkits_mail_to }}\""
+    state: present
+
+- name: chkrootkit | install logrotate config
+  template:
+    src: chkrootkit.logrotate
+    dest: /etc/logrotate.d/chkrootkit
+    owner: root
+    group: root
+    mode: 0644
+
+- name: chkrootkit | install cron job
+  template:
+    src: chkrootkit.cron.j2
+    dest: /etc/cron.daily/chkrootkit
+    owner: root
+    group: root
+    mode: 0755

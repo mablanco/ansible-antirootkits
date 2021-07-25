@@ -1,8 +1,18 @@
 ---
 # defaults file for mablanco.antirootkits
+
+# General setup
 antirootkits_mail_from: ''
 antirootkits_mail_rcpt: ''
 antirootkits_log_expire: '90'
+
+# Tools to install
+rkhunter: false
+chkrootkit: false
+unhide: false
+shelldetector: false
+
+# Shell Detector setup
 shelldetector_scan_directory: '/var/www'
 shelldetector_cron_hour: '6'
 shelldetector_cron_minute: '30'

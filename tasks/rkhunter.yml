@@ -1,0 +1,85 @@
+---
+
+- name: Rkhunter | install tool from repo
+  package:
+    name: rkhunter
+    state: present
+    update_cache: yes
+
+- name: Rkhunter | Debian specifics
+  block:
+
+  - name: Rkhunter | enable cron scheduled runs
+    lineinfile:
+      dest: "/etc/default/rkhunter"
+      regexp: "^CRON_DAILY_RUN="
+      line: "CRON_DAILY_RUN=\"true\""
+      state: present
+
+  - name: Rkhunter | enable weekly database updates
+    lineinfile:
+      dest: "/etc/default/rkhunter"
+      regexp: "^CRON_DB_UPDATE="
+      line: "CRON_DB_UPDATE=\"true\""
+      state: present
+
+  - name: Rkhunter | setup receiver email address for reports
+    lineinfile:
+      dest: "/etc/default/rkhunter"
+      regexp: "^REPORT_EMAIL="
+      line: "REPORT_EMAIL=\"{{ antirootkits_mail_to }}\""
+      state: present
+
+  when: ansible_os_family == "Debian"
+
+- name: Rkhunter | RedHat specifics
+  block:
+
+  - name: Rkhunter | setup report scan level
+    lineinfile:
+      dest: "/etc/sysconfig/rkhunter"
+      regexp: "^DIAG_SCAN="
+      line: "DIAG_SCAN=\"{{ antirootkits_rkhunter_diag_scan }}\""
+      state: present
+
+  - name: Rkhunter | setup receiver email address for reports
+    lineinfile:
+      dest: "/etc/sysconfig/rkhunter"
+      regexp: "^MAILTO="
+      line: "MAILTO=\"{{ antirootkits_mail_to }}\""
+      state: present
+
+  when: ansible_os_family == "RedHat"
+
+- name: Rkhunter | enable receiver email address for warnings
+  lineinfile:
+    dest: "/etc/rkhunter.conf"
+    regexp: "^#MAIL-ON-WARNING="
+    line: "MAIL-ON-WARNING=\"{{ antirootkits_mail_to }}\""
+    backrefs: yes
+    state: present
+
+- name: Rkhunter | remove void receiver email address for warnings (if present)
+  lineinfile:
+    dest: "/etc/rkhunter.conf"
+    regexp: "^MAIL-ON-WARNING=\"\"$"
+    state: absent
+
+- name: Rkhunter | setup receiver email address for warnings
+  lineinfile:
+    dest: "/etc/rkhunter.conf"
+    regexp: "^MAIL-ON-WARNING="
+    line: "MAIL-ON-WARNING=\"{{ antirootkits_mail_to }}\""
+    state: present
+
+- name: Rkhunter | whitelist /dev/shm/network/ifstate
+  lineinfile:
+    dest: "/etc/rkhunter.conf"
+    insertafter: "^#ALLOWDEVFILE="
+    line: "ALLOWDEVFILE=\"/dev/shm/network/ifstate\""
+    state: present
+
+- name: Rkhunter | run propupd
+  command: /usr/bin/rkhunter --propupd
+  args:
+    creates: /var/lib/rkhunter/db/rkhunter.dat
