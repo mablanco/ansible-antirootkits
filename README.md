@@ -2,25 +2,25 @@
 
 Ansible role to deploy several rootkit and malware detection tools:
 
-- rkhunter
-- chkrootkit
-- unhide
+- Rkhunter (<http://rkhunter.sourceforge.net/>)
+- chkrootkit (<http://www.chkrootkit.org/>)
+- Unhide (<https://github.com/YJesus/Unhide>)
 - Shell Detector (<https://github.com/emposha/Shell-Detector>)
 
-Only Debian and Ubuntu are fully supported, right now. On RHEL, the following antirootkits can be installed:
+Only Debian and Ubuntu are fully supported. On RHEL, the following antirootkits can be installed:
 
-- rkhunter
-- shelldetector
+- Rkhunter
+- Shell Detector
 
 ## Role Variables
 
-The role can be used to deploy only a few of all the supported tools:
+The role can be used to deploy any or all the supported tools:
 
-- **antirootkits_rkhunter_enabled**: wether to install and configure rkhunter
-- **antirootkits_chkrootkit_enabled**: wether to install and configure chkrootkit (defaults to false on RHEL)
-- **antirootkits_unhide_enabled**: wether to deploy unhide (defaults to false on RHEL)
-- **antirootkits_shelldetector_enabled**: wether to deploy shelldetector
-- **antirootkits_pkg_list**: list of packages to install (varies between Debian and RHEL)
+- **antirootkits_rkhunter_enabled**: Boolean. Whether to deploy rkhunter
+- **antirootkits_chkrootkit_enabled**: Boolean. Whether to deploy chkrootkit (defaults to false on RHEL)
+- **antirootkits_unhide_enabled**: Boolean. Whether to deploy unhide (defaults to false on RHEL)
+- **antirootkits_shelldetector_enabled**: Boolean. Whether to deploy shelldetector
+- **antirootkits_pkg_list**: List of packages to install (varies between Debian and RHEL)
 
 - **antirootkits_mail_cmd**: Command to send reports (varies between Debian and RHEL)
 - **antirootkits_mail_from**: Sender email address for the audit reports. No valid default, you have to fill it in.
