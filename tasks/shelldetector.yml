@@ -26,7 +26,7 @@
 - name: Shell Detector | install cron script
   template:
     src: shelldetector.cron.j2
-    dest: "{{ shelldetector_install_directory }}/shelldetector_cron.sh"
+    dest: "/usr/local/bin/shelldetector_cron.sh"
     owner: root
     group: root
     mode: 0750
@@ -39,4 +39,4 @@
     weekday: "*"
     cron_file: "shelldetector"
     user: "root"
-    job: "{{ shelldetector_install_directory }}/shelldetector_cron.sh 2>&1 | logger"
+    job: "/usr/local/bin/shelldetector_cron.sh 2>&1 | logger"
