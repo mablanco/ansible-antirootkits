@@ -1,5 +1,13 @@
 ---
 
+- name: Unhide | install prerequisites
+  package:
+    name:
+    - epel-release
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "RedHat"
+
 - name: Unhide | install tool from repo
   package:
     name: unhide

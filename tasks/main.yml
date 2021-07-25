@@ -31,9 +31,7 @@
 
 - name: Antirootkits | Unhide
   include: unhide.yml
-  when:
-    - unhide
-    - ansible_os_family == "Debian"
+  when: unhide
   tags: [ 'unhide' ]
 
 - name: Antirootkits | Shell Detector
