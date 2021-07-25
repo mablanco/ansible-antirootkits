@@ -28,6 +28,11 @@ The following variables control whether a tool is installed (*true*) or not (*fa
 - **antirootkits_log_expire**: Days before logs are purged. Defaults to _'90'_.
 - **antirootkits_rkhunter_diag_scan**: Include application check for detailed report scan. Defaults to _'no'_ (RHEL only)
 
+### Unhide setup
+
+- **unhide_cron_hour**: Hour of execution of Unhide's cron job. Defaults to _'6'_.
+- **unhide_cron_minute**: Minute of execution of Unhide's cron job. Defaults to _'00'_.
+
 ### Shell Detector setup
 
 - **shelldetector_install_directory**: Install directory. Defaults to _'/opt/Shell-Detector'_.
@@ -47,11 +52,6 @@ Example of how to use this role:
   roles:
      - { role: mablanco.antirootkits }
 ```
-
-## ToDo
-
-- Schedule unhide runs and send email reports
-- Add more tools!
 
 ## License
 

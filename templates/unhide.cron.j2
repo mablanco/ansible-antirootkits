@@ -1,0 +1,19 @@
+#!/bin/bash
+set -x
+
+DATE=$(date +%Y-%m-%d)
+HOST=$(hostname)
+LOG_DIR="/var/log/unhide"
+REPORT="$LOG_DIR/unhide-linux_${DATE}.log"
+LOG_EXPIRE={{ antirootkits_log_expire }}
+
+FROM="{{ antirootkits_mail_from }}"
+TO="{{ antirootkits_mail_to }}"
+SUBJECT="${HOST}: Unhide audit (${DATE})"
+
+cd $LOG_DIR
+unhide -m -f -d sys procall brute reverse
+
+find $LOG_DIR -type f -mtime +$LOG_EXPIRE -delete -print
+
+echo "Shell Detector audit for ${HOST} on ${DATE}: ${REPORT}" | {{ antirootkits_mail_cmd }}

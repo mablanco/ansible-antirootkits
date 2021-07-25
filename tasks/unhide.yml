@@ -13,3 +13,29 @@
     name: unhide
     state: present
     update_cache: yes
+
+- name: Unhide | create log directory
+  file:
+    path: /var/log/unhide
+    mode: 0750
+    owner: root
+    group: root
+    state: directory
+
+- name: Unhide | install cron script
+  template:
+    src: unhide.cron.j2
+    dest: "/usr/local/bin/unhide_cron.sh"
+    owner: root
+    group: root
+    mode: 0750
+
+- name: Unhide | creates daily cronjob
+  cron:
+    name: "Launch Unhide audit"
+    hour: "{{ unhide_cron_hour }}"
+    minute: "{{ unhide_cron_minute }}"
+    weekday: "*"
+    cron_file: "unhide"
+    user: "root"
+    job: "/usr/local/bin/unhide_cron.sh 2>&1 | logger"
