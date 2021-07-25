@@ -16,7 +16,7 @@
 
 - name: Unhide | create log directory
   file:
-    path: /var/log/unhide
+    path: "{{ unhide_log_directory }}"
     mode: 0750
     owner: root
     group: root

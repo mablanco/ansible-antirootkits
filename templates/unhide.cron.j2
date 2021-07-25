@@ -3,7 +3,7 @@ set -x
 
 DATE=$(date +%Y-%m-%d)
 HOST=$(hostname)
-LOG_DIR="/var/log/unhide"
+LOG_DIR="{{ unhide_log_directory }}"
 REPORT="$LOG_DIR/unhide-linux_${DATE}.log"
 LOG_EXPIRE={{ antirootkits_log_expire }}
 

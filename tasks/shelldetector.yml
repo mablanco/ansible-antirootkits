@@ -17,7 +17,7 @@
 
 - name: Shell Detector | create log directory
   file:
-    path: /var/log/shelldetector
+    path: "{{ shelldetector_log_directory }}"
     mode: 0750
     owner: root
     group: root

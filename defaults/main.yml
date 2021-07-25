@@ -13,11 +13,13 @@ unhide: false
 shelldetector: false
 
 # Unhide setup
+unhide_log_directory: '/var/log/unhide'
 unhide_cron_hour: '6'
 unhide_cron_minute: '00'
 
 # Shell Detector setup
 shelldetector_install_directory: '/opt/Shell-Detector'
 shelldetector_scan_directory: '/var/www'
+shelldetector_log_directory: '/var/log/shelldetector'
 shelldetector_cron_hour: '6'
 shelldetector_cron_minute: '30'

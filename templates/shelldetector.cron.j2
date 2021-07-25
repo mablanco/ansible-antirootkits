@@ -3,7 +3,7 @@ set -x
 
 DATE=$(date +%Y%m%d)
 HOST=$(hostname)
-LOG_DIR="/var/log/shelldetector"
+LOG_DIR="{{ shelldetector_log_directory }}"
 REPORT="$LOG_DIR/report-${HOST}.${DATE}.log"
 LOG_EXPIRE={{ antirootkits_log_expire }}
 
