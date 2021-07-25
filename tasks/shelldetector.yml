@@ -1,5 +1,12 @@
 ---
 
+- name: Shell Detector | install prerequisites
+  package:
+    name:
+    - git
+    state: present
+    update_cache: yes
+
 - name: Shell Detector | install tool
   git:
     repo: https://github.com/emposha/Shell-Detector.git
