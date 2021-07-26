@@ -1,4 +1,4 @@
-name: Ansible
+name: Ansible Lint
 
 # Controls when the workflow will run
 on:
@@ -24,3 +24,13 @@ jobs:
       # Lint 
       - name: ansible-lint
         uses: ansible/ansible-lint-action@v4.1.0.post0
+        with:
+          targets: |
+            defaults
+            handlers
+            tasks
+            vars
+          override-deps: |
+            ansible==2.9
+            ansible-lint==4.2.0
+            
