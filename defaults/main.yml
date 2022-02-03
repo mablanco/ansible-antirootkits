@@ -23,3 +23,6 @@ shelldetector_scan_directory: '/var/www'
 shelldetector_log_directory: '/var/log/shelldetector'
 shelldetector_cron_hour: '6'
 shelldetector_cron_minute: '30'
+
+# Rkhunter setup
+rkhunter_allow_ssh_root_user: 'no'
