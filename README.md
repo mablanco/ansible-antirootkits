@@ -40,6 +40,10 @@ The following variables control whether a tool is installed (*true*) or not (*fa
 - **shelldetector_cron_hour**: Hour of execution of Shell Detector's cron job. Defaults to _'6'_.
 - **shelldetector_cron_minute**: Minute of execution of Shell Detector's cron job. Defaults to _'30'_.
 
+### Rkhunter setup
+
+- **rkhunter_allow_ssh_root_user**: Define what rkhunter should expect in sshd config. Defaults to _'no'_.
+
 ## Example playbook
 
 Example of how to use this role:

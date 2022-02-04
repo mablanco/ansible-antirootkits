@@ -72,6 +72,13 @@
     line: "MAIL-ON-WARNING=\"{{ antirootkits_mail_to }}\""
     state: present
 
+- name: Rkhunter | setup attended root ssh access
+  lineinfile:
+    dest: "/etc/rkhunter.conf"
+    regexp: "^ALLOW_SSH_ROOT_USER="
+    line: "ALLOW_SSH_ROOT_USER={{ rkhunter_allow_ssh_root_user }}"
+    state: present
+
 - name: Rkhunter | whitelist /dev/shm/network/ifstate
   lineinfile:
     dest: "/etc/rkhunter.conf"
