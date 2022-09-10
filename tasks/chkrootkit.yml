@@ -1,4 +1,13 @@
 ---
+- name: chkrootkit | set config file path for Ubuntu 22.04+
+  set_fact:
+    chkrootkit_conf: "/etc/chkrootkit/chkrootkit.conf"
+  when: ansible_distribution == "Ubuntu" and ansible_distribution_version == "22.04"
+
+- name: chkrootkit | set config file path for other Debian based distros
+  set_fact:
+    chkrootkit_conf: "/etc/chkrootkit.conf"
+  when: not (ansible_distribution == "Ubuntu" and ansible_distribution_version == "22.04")
 
 - name: chkrootkit | install tool from repo
   package:
@@ -8,14 +17,14 @@
 
 - name: chkrootkit | enable daily scheduled runs
   lineinfile:
-    dest: "/etc/chkrootkit.conf"
+    dest: "{{ chkrootkit_conf }}"
     regexp: "^RUN_DAILY="
     line: "RUN_DAILY=\"true\""
     state: present
 
 - name: chkrootkit | setup receiver email address for reports
   lineinfile:
-    dest: "/etc/chkrootkit.conf"
+    dest: "{{ chkrootkit_conf }}"
     line: "REPORT_EMAIL=\"{{ antirootkits_mail_to }}\""
     state: present
 
