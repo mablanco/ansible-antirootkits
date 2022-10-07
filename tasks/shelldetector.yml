@@ -14,6 +14,8 @@
     clone: true
     force: true
     depth: 1
+    version: 5ac8ab2bf514bea737ddff16a75d85d887478f85
+    refspec: refs/heads/master
 
 - name: Shell Detector | create log directory
   file:
