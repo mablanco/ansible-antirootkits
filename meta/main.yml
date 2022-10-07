@@ -1,8 +1,10 @@
 galaxy_info:
+  role_name: antirootkits
+  namespace: mablanco
   author: Marco Antonio Blanco
   description: Linux antirootkit tools deployment
   license: license GPLv3
-  min_ansible_version: 2.0
+  min_ansible_version: 2.8
 
   platforms:
   - name: EL
