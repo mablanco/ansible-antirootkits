@@ -15,26 +15,26 @@
 
 - name: Antirootkits | load OS Family specific defaults
   include_vars: "{{ ansible_os_family|lower }}.yml"
-  tags: [ 'rkhunter', 'chkrootkit', 'unhide', 'shelldetector']
+  tags: ['rkhunter','chkrootkit','unhide','shelldetector']
 
 - name: Antirootkits | Rkhunter
   import_tasks: rkhunter.yml
   when: rkhunter
-  tags: [ 'rkhunter' ]
+  tags: ['rkhunter']
 
 - name: Antirootkits | chkrootkit
   import_tasks: chkrootkit.yml
   when:
     - chkrootkit
     - ansible_os_family == "Debian"
-  tags: [ 'chkrootkit' ]
+  tags: ['chkrootkit']
 
 - name: Antirootkits | Unhide
   import_tasks: unhide.yml
   when: unhide
-  tags: [ 'unhide' ]
+  tags: ['unhide']
 
 - name: Antirootkits | Shell Detector
   import_tasks: shelldetector.yml
   when: shelldetector
-  tags: [ 'shelldetector' ]
+  tags: ['shelldetector']
