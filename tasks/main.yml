@@ -18,23 +18,23 @@
   tags: [ 'rkhunter', 'chkrootkit', 'unhide', 'shelldetector']
 
 - name: Antirootkits | Rkhunter
-  include: rkhunter.yml
+  import_tasks: rkhunter.yml
   when: rkhunter
   tags: [ 'rkhunter' ]
 
 - name: Antirootkits | chkrootkit
-  include: chkrootkit.yml
+  import_tasks: chkrootkit.yml
   when:
     - chkrootkit
     - ansible_os_family == "Debian"
   tags: [ 'chkrootkit' ]
 
 - name: Antirootkits | Unhide
-  include: unhide.yml
+  import_tasks: unhide.yml
   when: unhide
   tags: [ 'unhide' ]
 
 - name: Antirootkits | Shell Detector
-  include: shelldetector.yml
+  import_tasks: shelldetector.yml
   when: shelldetector
   tags: [ 'shelldetector' ]
