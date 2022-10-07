@@ -3,7 +3,7 @@
 
 # General setup
 antirootkits_mail_from: ''
-antirootkits_mail_rcpt: ''
+antirootkits_mail_to: ''
 antirootkits_log_expire: '90'
 
 # Tools to install
