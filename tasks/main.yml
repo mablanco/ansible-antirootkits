@@ -4,18 +4,18 @@
 - name: Antirootkits | antirootkits_mail_from variable should be defined
   assert:
     that:
-    - antirootkits_mail_from is defined and antirootkits_mail_from | length > 0
+      - antirootkits_mail_from is defined and antirootkits_mail_from | length > 0
     msg: "Set the value of 'antirootkits_mail_from' in either the inventory file or the playbook invoking this role."
 
 - name: Antirootkits | antirootkits_mail_to variable should be defined
   assert:
     that:
-    - antirootkits_mail_to is defined and antirootkits_mail_to | length > 0
+      - antirootkits_mail_to is defined and antirootkits_mail_to | length > 0
     msg: "Set the value of 'antirootkits_mail_to' in either the inventory file or the playbook invoking this role."
 
 - name: Antirootkits | load OS Family specific defaults
   include_vars: "{{ ansible_os_family|lower }}.yml"
-  tags: ['rkhunter','chkrootkit','unhide','shelldetector']
+  tags: ['rkhunter', 'chkrootkit', 'unhide', 'shelldetector']
 
 - name: Antirootkits | Rkhunter
   import_tasks: rkhunter.yml

@@ -3,7 +3,7 @@
 - name: Shell Detector | install prerequisites
   package:
     name:
-    - git
+      - git
     state: present
     update_cache: true
 

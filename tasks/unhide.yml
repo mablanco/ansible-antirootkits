@@ -3,7 +3,7 @@
 - name: Unhide | install prerequisites
   package:
     name:
-    - epel-release
+      - epel-release
     state: present
     update_cache: true
   when: ansible_os_family == "RedHat"
