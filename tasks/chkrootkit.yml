@@ -13,7 +13,7 @@
   package:
     name: chkrootkit
     state: present
-    update_cache: yes
+    update_cache: true
 
 - name: chkrootkit | enable daily scheduled runs
   lineinfile:

@@ -5,14 +5,14 @@
     name:
     - git
     state: present
-    update_cache: yes
+    update_cache: true
 
 - name: Shell Detector | install tool
   git:
     repo: https://github.com/emposha/Shell-Detector.git
     dest: "{{ shelldetector_install_directory }}"
-    clone: yes
-    force: yes
+    clone: true
+    force: true
     depth: 1
 
 - name: Shell Detector | create log directory

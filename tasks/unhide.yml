@@ -5,14 +5,14 @@
     name:
     - epel-release
     state: present
-    update_cache: yes
+    update_cache: true
   when: ansible_os_family == "RedHat"
 
 - name: Unhide | install tool from repo
   package:
     name: unhide
     state: present
-    update_cache: yes
+    update_cache: true
 
 - name: Unhide | create log directory
   file:

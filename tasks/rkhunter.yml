@@ -4,7 +4,7 @@
   package:
     name: rkhunter
     state: present
-    update_cache: yes
+    update_cache: true
 
 - name: Rkhunter | Debian specifics
   block:
@@ -56,7 +56,7 @@
     dest: "/etc/rkhunter.conf"
     regexp: "^#MAIL-ON-WARNING="
     line: "MAIL-ON-WARNING=\"{{ antirootkits_mail_to }}\""
-    backrefs: yes
+    backrefs: true
     state: present
 
 - name: Rkhunter | remove void receiver email address for warnings (if present)
