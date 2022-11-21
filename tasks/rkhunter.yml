@@ -30,6 +30,13 @@
         line: "REPORT_EMAIL=\"{{ antirootkits_mail_to }}\""
         state: present
 
+    - name: Rkhunter | set package manager as DPKG
+      lineinfile:
+        dest: "/etc/rkhunter.conf"
+        regexp: "(^$|^#)PKGMGR="
+        line: "PKGMGR=DPKG"
+        state: present
+
   when: ansible_os_family == "Debian"
 
 - name: Rkhunter | RedHat specifics
@@ -47,6 +54,13 @@
         dest: "/etc/sysconfig/rkhunter"
         regexp: "^MAILTO="
         line: "MAILTO=\"{{ antirootkits_mail_to }}\""
+        state: present
+
+    - name: Rkhunter | set package manager as RPM
+      lineinfile:
+        dest: "/etc/rkhunter.conf"
+        regexp: "(^$|^#)PKGMGR="
+        line: "PKGMGR=RPM"
         state: present
 
   when: ansible_os_family == "RedHat"
