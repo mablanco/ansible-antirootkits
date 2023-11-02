@@ -1,13 +1,15 @@
 ---
-- name: chkrootkit | set config file path for Ubuntu 22.04+
+- name: chkrootkit | set config file path for modern Debian-based distros
   set_fact:
     chkrootkit_conf: "/etc/chkrootkit/chkrootkit.conf"
-  when: ansible_distribution == "Ubuntu" and ansible_distribution_version == "22.04"
+  when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 22) or
+        (ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 12)
 
-- name: chkrootkit | set config file path for other Debian based distros
+- name: chkrootkit | set config file path for old Debian-based distros
   set_fact:
     chkrootkit_conf: "/etc/chkrootkit.conf"
-  when: not (ansible_distribution == "Ubuntu" and ansible_distribution_version == "22.04")
+  when: not ((ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 22) or
+        (ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 12))
 
 - name: chkrootkit | install tool from repo
   package:
