@@ -20,7 +20,7 @@
       lineinfile:
         dest: "/etc/default/rkhunter"
         regexp: "^CRON_DB_UPDATE="
-        line: "CRON_DB_UPDATE=\"true\""
+        line: "CRON_DB_UPDATE=\"{{ rkhunter_cron_db_update }}\""
         state: present
 
     - name: Rkhunter | setup receiver email address for reports

@@ -43,6 +43,7 @@ The following variables control whether a tool is installed (*true*) or not (*fa
 ### Rkhunter setup
 
 - **rkhunter_allow_ssh_root_user**: Define what rkhunter should expect in sshd config. Defaults to _'no'_.
+- **rkhunter_cron_db_update**: Whether rkhunter's weekly cron job updates its data files. Defaults to _'true'_.
 
 ## Example playbook
 

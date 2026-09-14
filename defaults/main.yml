@@ -26,3 +26,4 @@ shelldetector_cron_minute: '30'
 
 # Rkhunter setup
 rkhunter_allow_ssh_root_user: 'no'
+rkhunter_cron_db_update: 'true'
