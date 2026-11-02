@@ -19,7 +19,7 @@ Ansible role to deploy rootkit and malware detection tools on Linux, scheduled t
 Tools that are not packaged for the target system are skipped. Building them from source would need a compiler on the hosts being audited, which is a bad practice for a security tool.
 
 - **EL:** the role installs `epel-release` on Rocky Linux, AlmaLinux and other rebuilds. On RHEL, enable EPEL before running it.
-- **openSUSE:** the package does not schedule any run, so the role installs a daily cron job that reads `/etc/sysconfig/rkhunter`, plus `cron` and `mailx`. SUSE Linux Enterprise is not tested.
+- **openSUSE:** the role needs the `community.general` collection, which has the `zypper` module (`ansible-galaxy collection install community.general`). The package does not schedule any run, so the role installs a daily cron job that reads `/etc/sysconfig/rkhunter`, plus `cron` and `mailx`. SUSE Linux Enterprise is not tested.
 
 The hosts need a working `mail` command and mail transport agent for the reports to be delivered.
 
