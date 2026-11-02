@@ -39,6 +39,43 @@
     label: "{{ item.key }}"
   when: ansible_facts['os_family'] == 'RedHat'
 
+- name: Rkhunter | Configure the scheduled runs and their reports (openSUSE)
+  ansible.builtin.lineinfile:
+    path: /etc/sysconfig/rkhunter
+    regexp: "^{{ item.key }}="
+    line: '{{ item.key }}="{{ item.value }}"'
+  loop:
+    - { key: START_RKHUNTER, value: "yes" }
+    - { key: CRON_DB_UPDATE, value: "{{ 'yes' if rkhunter_cron_db_update | bool else 'no' }}" }
+    - { key: REPORT_EMAIL, value: "{{ antirootkits_mail_to }}" }
+    # The package default adds --no-mail-on-warning, which would ignore
+    # MAIL-ON-WARNING below
+    - { key: OPTIONS, value: "--cronjob --report-warnings-only --append-log --pkgmgr RPM" }
+  loop_control:
+    label: "{{ item.key }}"
+  when: ansible_facts['os_family'] == 'Suse'
+
+# The openSUSE package does not schedule any run, so the role does
+- name: Rkhunter | Schedule the daily runs (openSUSE)
+  when: ansible_facts['os_family'] == 'Suse'
+  block:
+    # rkhunter mails its warnings with the mail command, which the openSUSE
+    # package does not pull in, unlike the Debian and EL ones
+    - name: Rkhunter | Install cron and a mail client (openSUSE)
+      ansible.builtin.package:
+        name:
+          - cron
+          - mailx
+        state: present
+
+    - name: Rkhunter | Install the daily job (openSUSE)
+      ansible.builtin.template:
+        src: rkhunter.suse.cron.j2
+        dest: /etc/cron.daily/rkhunter
+        owner: root
+        group: root
+        mode: "0755"
+
 - name: Rkhunter | Configure the scanner
   ansible.builtin.lineinfile:
     path: /etc/rkhunter.conf

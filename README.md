@@ -10,13 +10,16 @@ Ansible role to deploy rootkit and malware detection tools on Linux, scheduled t
 
 ## Supported platforms
 
-| Tool | Debian 12 and 13 | Ubuntu 24.04 and 26.04 | EL 9 and 10 |
-|---|---|---|---|
-| Rkhunter | ✅ | ✅ | ✅ (from EPEL) |
-| chkrootkit | ✅ | ✅ | ❌ not packaged |
-| Unhide | ✅ | ✅ | ❌ not packaged |
+| Tool | Debian 12 and 13 | Ubuntu 24.04 and 26.04 | EL 9 and 10 | openSUSE Leap 16.0 |
+|---|---|---|---|---|
+| Rkhunter | ✅ | ✅ | ✅ (from EPEL) | ✅ |
+| chkrootkit | ✅ | ✅ | ❌ not packaged | ❌ not packaged |
+| Unhide | ✅ | ✅ | ❌ not packaged | ❌ not packaged |
 
-On EL, the role installs `epel-release` on Rocky Linux, AlmaLinux and other rebuilds. On RHEL, enable EPEL before running it. Tools that are not packaged for the target system are skipped.
+Tools that are not packaged for the target system are skipped. Building them from source would need a compiler on the hosts being audited, which is a bad practice for a security tool.
+
+- **EL:** the role installs `epel-release` on Rocky Linux, AlmaLinux and other rebuilds. On RHEL, enable EPEL before running it.
+- **openSUSE:** the package does not schedule any run, so the role installs a daily cron job that reads `/etc/sysconfig/rkhunter`, plus `cron` and `mailx`. SUSE Linux Enterprise is not tested.
 
 The hosts need a working `mail` command and mail transport agent for the reports to be delivered.
 
@@ -39,7 +42,7 @@ All of them default to `false`.
 ### Rkhunter setup
 
 - **rkhunter_allow_ssh_root_user**: value of `ALLOW_SSH_ROOT_USER`, what rkhunter should expect in the SSH server configuration. Defaults to `no`.
-- **rkhunter_cron_db_update**: whether rkhunter's weekly cron job updates its data files (Debian and Ubuntu). Defaults to `true`.
+- **rkhunter_cron_db_update**: whether the scheduled runs update rkhunter's data files (Debian, Ubuntu and openSUSE). Defaults to `true`.
 - **antirootkits_rkhunter_diag_scan**: whether the daily report includes the application check (EL). Defaults to `no`.
 
 ### Unhide setup

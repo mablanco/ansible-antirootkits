@@ -20,6 +20,10 @@ galaxy_info:
       versions:
         - "9"
         - "10"
+    # Galaxy's schema has no recent openSUSE versions. Tested on Leap 16.0.
+    - name: opensuse
+      versions:
+        - all
 
   galaxy_tags:
     - security

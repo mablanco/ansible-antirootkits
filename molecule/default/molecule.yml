@@ -14,6 +14,8 @@ platforms:
     image: rockylinux/rockylinux:9
   - name: rocky10
     image: rockylinux/rockylinux:10
+  - name: leap16
+    image: opensuse/leap:16.0
 provisioner:
   name: ansible
   env:

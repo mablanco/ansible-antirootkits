@@ -16,6 +16,11 @@
       register: verify_rkhunter_db
       failed_when: not verify_rkhunter_db.stat.exists
 
+    - name: Check the daily rkhunter job (openSUSE)
+      ansible.builtin.command: sh -n /etc/cron.daily/rkhunter
+      changed_when: false
+      when: ansible_facts['os_family'] == 'Suse'
+
     - name: Check the Debian and Ubuntu tools
       when: ansible_facts['os_family'] == 'Debian'
       block:
