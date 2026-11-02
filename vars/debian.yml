@@ -1,3 +1,0 @@
----
-# vars file for mablanco.antirootkits
-antirootkits_mail_cmd: '/usr/bin/mail -s "${SUBJECT}" -r ${FROM} -A ${REPORT} ${TO}'

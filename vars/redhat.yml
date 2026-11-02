@@ -1,4 +1,0 @@
----
-# vars file for mablanco.antirootkits
-antirootkits_rkhunter_diag_scan: false
-antirootkits_mail_cmd: '/usr/bin/mail -s "${SUBJECT}" -r ${FROM} -a ${REPORT} ${TO}'

@@ -1,41 +1,40 @@
 ---
-
-- name: Unhide | install prerequisites
-  package:
+- name: Unhide | Install the tool and cron
+  ansible.builtin.apt:
     name:
-      - epel-release
+      - unhide
+      - cron
     state: present
-    update_cache: true
-  when: ansible_os_family == "RedHat"
 
-- name: Unhide | install tool from repo
-  package:
-    name: unhide
-    state: present
-    update_cache: true
-
-- name: Unhide | create log directory
-  file:
+- name: Unhide | Create the log directory
+  ansible.builtin.file:
     path: "{{ unhide_log_directory }}"
-    mode: 0750
-    owner: root
-    group: root
     state: directory
-
-- name: Unhide | install cron script
-  template:
-    src: unhide.cron.j2
-    dest: "/usr/local/bin/unhide_cron.sh"
     owner: root
     group: root
-    mode: 0750
+    mode: "0750"
 
-- name: Unhide | creates daily cronjob
-  cron:
-    name: "Launch Unhide audit"
+- name: Unhide | Install the audit script
+  ansible.builtin.template:
+    src: unhide.cron.j2
+    dest: /usr/local/bin/unhide_cron.sh
+    owner: root
+    group: root
+    mode: "0750"
+
+- name: Unhide | Schedule the daily audit
+  ansible.builtin.cron:
+    name: Launch Unhide audit
     hour: "{{ unhide_cron_hour }}"
     minute: "{{ unhide_cron_minute }}"
-    weekday: "*"
-    cron_file: "unhide"
-    user: "root"
-    job: "/usr/local/bin/unhide_cron.sh 2>&1 | logger"
+    cron_file: unhide
+    user: root
+    job: /usr/local/bin/unhide_cron.sh 2>&1 | logger -t unhide
+
+- name: Unhide | Remove the files of older versions of this role
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /usr/local/bin/shelldetector_cron.sh
+    - /etc/cron.d/shelldetector

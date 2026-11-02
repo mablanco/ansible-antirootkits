@@ -1,47 +1,43 @@
 ---
-- name: chkrootkit | set config file path for modern Debian-based distros
-  set_fact:
-    chkrootkit_conf: "/etc/chkrootkit/chkrootkit.conf"
-  when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 22) or
-        (ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 12)
-
-- name: chkrootkit | set config file path for old Debian-based distros
-  set_fact:
-    chkrootkit_conf: "/etc/chkrootkit.conf"
-  when: not ((ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 22) or
-        (ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 12))
-
-- name: chkrootkit | install tool from repo
-  package:
+- name: Chkrootkit | Install the tool
+  ansible.builtin.apt:
     name: chkrootkit
     state: present
-    update_cache: true
 
-- name: chkrootkit | enable daily scheduled runs
-  lineinfile:
-    dest: "{{ chkrootkit_conf }}"
-    regexp: "^RUN_DAILY="
-    line: "RUN_DAILY=\"true\""
-    state: present
+# The package runs chkrootkit daily, from cron or from a systemd timer, and
+# mails the report itself
+- name: Chkrootkit | Configure the daily runs and their reports
+  ansible.builtin.lineinfile:
+    path: /etc/chkrootkit/chkrootkit.conf
+    regexp: "^{{ item.key }}="
+    line: '{{ item.key }}="{{ item.value }}"'
+  loop:
+    - { key: RUN_DAILY, value: "true" }
+    - { key: MAILTO, value: "{{ antirootkits_mail_to }}" }
+  loop_control:
+    label: "{{ item.key }}"
 
-- name: chkrootkit | setup receiver email address for reports
-  lineinfile:
-    dest: "{{ chkrootkit_conf }}"
-    line: "REPORT_EMAIL=\"{{ antirootkits_mail_to }}\""
-    state: present
+# Older versions of this role replaced the package's daily job with their own,
+# which did not send the reports. Restore the package's one.
+- name: Chkrootkit | Look for the daily job of older versions of this role
+  ansible.builtin.command: grep -q "grep -q 'INFECTED|Vulnerable'" /etc/cron.daily/chkrootkit
+  register: antirootkits_old_chkrootkit_job
+  changed_when: false
+  failed_when: antirootkits_old_chkrootkit_job.rc > 1
 
-- name: chkrootkit | install logrotate config
-  template:
-    src: chkrootkit.logrotate
-    dest: /etc/logrotate.d/chkrootkit
-    owner: root
-    group: root
-    mode: 0644
+- name: Chkrootkit | Restore the package's daily job
+  when: antirootkits_old_chkrootkit_job.rc == 0
+  block:
+    - name: Chkrootkit | Remove the old daily job and log rotation
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/cron.daily/chkrootkit
+        - /etc/logrotate.d/chkrootkit
 
-- name: chkrootkit | install cron job
-  template:
-    src: chkrootkit.cron.j2
-    dest: /etc/cron.daily/chkrootkit
-    owner: root
-    group: root
-    mode: 0755
+    # The apt module cannot reinstall a package that is already installed
+    - name: Chkrootkit | Reinstall the package's daily job  # noqa: command-instead-of-module
+      ansible.builtin.command: >-
+        apt-get install --reinstall -y -o Dpkg::Options::=--force-confmiss chkrootkit
+      changed_when: true

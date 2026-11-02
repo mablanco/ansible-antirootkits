@@ -1,0 +1,18 @@
+#!/bin/sh
+# {{ ansible_managed }}
+# Daily rkhunter run for openSUSE, whose package does not schedule one. It
+# reads the settings of /etc/sysconfig/rkhunter. rkhunter mails its warnings
+# to the address in MAIL-ON-WARNING, in /etc/rkhunter.conf.
+. /etc/sysconfig/rkhunter
+
+case "$START_RKHUNTER" in
+  [Yy]*) ;;
+  *) exit 0 ;;
+esac
+
+if [ "$CRON_DB_UPDATE" = yes ]; then
+  /usr/bin/rkhunter --update --nocolors >/dev/null
+fi
+
+# shellcheck disable=SC2086 # OPTIONS holds several options
+nice -n "${NICE:-0}" /usr/bin/rkhunter $OPTIONS --createlogfile "$LOGFILE"

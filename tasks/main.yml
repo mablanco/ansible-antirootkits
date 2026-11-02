@@ -1,40 +1,42 @@
 ---
-# tasks file for mablanco.antirootkits
-
-- name: Antirootkits | antirootkits_mail_from variable should be defined
-  assert:
+- name: Antirootkits | Check the mail addresses
+  ansible.builtin.assert:
     that:
-      - antirootkits_mail_from is defined and antirootkits_mail_from | length > 0
-    msg: "Set the value of 'antirootkits_mail_from' in either the inventory file or the playbook invoking this role."
+      - antirootkits_mail_from | length > 0
+      - antirootkits_mail_to | length > 0
+    fail_msg: Set antirootkits_mail_from and antirootkits_mail_to in the inventory or in the playbook.
+    quiet: true
 
-- name: Antirootkits | antirootkits_mail_to variable should be defined
-  assert:
-    that:
-      - antirootkits_mail_to is defined and antirootkits_mail_to | length > 0
-    msg: "Set the value of 'antirootkits_mail_to' in either the inventory file or the playbook invoking this role."
+- name: Antirootkits | Check that Shell Detector is not requested
+  ansible.builtin.assert:
+    that: not (shelldetector | default(false) | bool)
+    fail_msg: >-
+      Shell Detector support was removed: the tool has had no updates since 2019
+      and needs Python 2. Remove the shelldetector variable.
+    quiet: true
 
-- name: Antirootkits | load OS Family specific defaults
-  include_vars: "{{ ansible_os_family|lower }}.yml"
-  tags: ['rkhunter', 'chkrootkit', 'unhide', 'shelldetector']
+- name: Antirootkits | Update the package cache (Debian)
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+  when: ansible_facts['os_family'] == 'Debian'
 
 - name: Antirootkits | Rkhunter
-  import_tasks: rkhunter.yml
-  when: rkhunter
-  tags: ['rkhunter']
+  ansible.builtin.import_tasks: rkhunter.yml
+  when: rkhunter | bool
+  tags: [rkhunter]
 
+# chkrootkit and Unhide are not packaged for EL 9 and 10, not even in EPEL
 - name: Antirootkits | chkrootkit
-  import_tasks: chkrootkit.yml
+  ansible.builtin.import_tasks: chkrootkit.yml
   when:
-    - chkrootkit
-    - ansible_os_family == "Debian"
-  tags: ['chkrootkit']
+    - chkrootkit | bool
+    - ansible_facts['os_family'] == 'Debian'
+  tags: [chkrootkit]
 
 - name: Antirootkits | Unhide
-  import_tasks: unhide.yml
-  when: unhide
-  tags: ['unhide']
-
-- name: Antirootkits | Shell Detector
-  import_tasks: shelldetector.yml
-  when: shelldetector
-  tags: ['shelldetector']
+  ansible.builtin.import_tasks: unhide.yml
+  when:
+    - unhide | bool
+    - ansible_facts['os_family'] == 'Debian'
+  tags: [unhide]

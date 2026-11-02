@@ -1,0 +1,7 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Check that the package's daily job is back
+      ansible.builtin.command: grep -q chkrootkit-daily /etc/cron.daily/chkrootkit
+      changed_when: false

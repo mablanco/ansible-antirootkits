@@ -1,19 +1,18 @@
 #!/bin/bash
-set -x
+# {{ ansible_managed }}
+# Looks for processes hidden by rootkits and mails the report.
+set -u
 
 DATE=$(date +%Y-%m-%d)
 HOST=$(hostname)
 LOG_DIR="{{ unhide_log_directory }}"
-REPORT="$LOG_DIR/unhide-linux_${DATE}.log"
-LOG_EXPIRE={{ antirootkits_log_expire }}
 
-FROM="{{ antirootkits_mail_from }}"
-TO="{{ antirootkits_mail_to }}"
-SUBJECT="${HOST}: Unhide audit (${DATE})"
+cd "$LOG_DIR" || exit 1
+# -f writes the log to unhide-linux_<date>_<time>.log in the current directory
+/usr/sbin/unhide-linux -m -f -d sys procall brute reverse
+REPORT=$(ls -1t "$LOG_DIR"/unhide-linux_*.log | head -n 1)
 
-cd $LOG_DIR
-/usr/sbin/unhide -m -f -d sys procall brute reverse
+find "$LOG_DIR" -type f -mtime +{{ antirootkits_log_expire }} -delete
 
-find $LOG_DIR -type f -mtime +$LOG_EXPIRE -delete -print
-
-echo "Shell Detector audit for ${HOST} on ${DATE}: ${REPORT}" | {{ antirootkits_mail_cmd }}
+mail -s "${HOST}: Unhide audit (${DATE})" -r "{{ antirootkits_mail_from }}" \
+  "{{ antirootkits_mail_to }}" < "$REPORT"
