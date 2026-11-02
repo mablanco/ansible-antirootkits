@@ -1,0 +1,13 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    antirootkits_mail_from: sender@example.com
+    antirootkits_mail_to: receiver@example.com
+    rkhunter: true
+    chkrootkit: true
+    unhide: true
+  tasks:
+    - name: Run the role
+      ansible.builtin.include_role:
+        name: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"

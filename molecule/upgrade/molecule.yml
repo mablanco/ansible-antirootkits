@@ -1,0 +1,12 @@
+---
+# Runs the role on a host set up by an older version of the role, which had
+# replaced chkrootkit's daily job with its own
+driver:
+  name: docker
+platforms:
+  - name: debian13-upgrade
+    image: debian:13.7-slim
+provisioner:
+  name: ansible
+  env:
+    ANSIBLE_ROLES_PATH: ../../..

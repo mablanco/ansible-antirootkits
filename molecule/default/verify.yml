@@ -1,0 +1,32 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Check the Rkhunter configuration
+      ansible.builtin.command: rkhunter --config-check
+      changed_when: false
+
+    - name: Check that Rkhunter mails its warnings
+      ansible.builtin.command: grep -qx 'MAIL-ON-WARNING=receiver@example.com' /etc/rkhunter.conf
+      changed_when: false
+
+    - name: Check the file properties database
+      ansible.builtin.stat:
+        path: /var/lib/rkhunter/db/rkhunter.dat
+      register: verify_rkhunter_db
+      failed_when: not verify_rkhunter_db.stat.exists
+
+    - name: Check the Debian and Ubuntu tools
+      when: ansible_facts['os_family'] == 'Debian'
+      block:
+        - name: Check that chkrootkit mails its daily report
+          ansible.builtin.command: grep -qx 'MAILTO="receiver@example.com"' /etc/chkrootkit/chkrootkit.conf
+          changed_when: false
+
+        - name: Check the syntax of the Unhide script
+          ansible.builtin.command: bash -n /usr/local/bin/unhide_cron.sh
+          changed_when: false
+
+        - name: Check the Unhide cron job
+          ansible.builtin.command: grep -q unhide_cron.sh /etc/cron.d/unhide
+          changed_when: false

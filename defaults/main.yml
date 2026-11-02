@@ -1,29 +1,20 @@
 ---
-# defaults file for mablanco.antirootkits
-
 # General setup
-antirootkits_mail_from: ''
-antirootkits_mail_to: ''
-antirootkits_log_expire: '90'
+antirootkits_mail_from: ""
+antirootkits_mail_to: ""
+antirootkits_log_expire: 90
 
 # Tools to install
 rkhunter: false
 chkrootkit: false
 unhide: false
-shelldetector: false
 
 # Unhide setup
-unhide_log_directory: '/var/log/unhide'
-unhide_cron_hour: '6'
-unhide_cron_minute: '00'
-
-# Shell Detector setup
-shelldetector_install_directory: '/opt/Shell-Detector'
-shelldetector_scan_directory: '/var/www'
-shelldetector_log_directory: '/var/log/shelldetector'
-shelldetector_cron_hour: '6'
-shelldetector_cron_minute: '30'
+unhide_log_directory: /var/log/unhide
+unhide_cron_hour: "6"
+unhide_cron_minute: "0"
 
 # Rkhunter setup
-rkhunter_allow_ssh_root_user: 'no'
-rkhunter_cron_db_update: 'true'
+rkhunter_allow_ssh_root_user: "no"
+rkhunter_cron_db_update: "true"
+antirootkits_rkhunter_diag_scan: "no"

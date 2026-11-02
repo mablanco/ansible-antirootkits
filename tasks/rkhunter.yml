@@ -1,106 +1,78 @@
 ---
+# Rocky Linux, AlmaLinux and other rebuilds ship epel-release. On RHEL,
+# enable EPEL before running the role.
+- name: Rkhunter | Install EPEL
+  ansible.builtin.package:
+    name: epel-release
+    state: present
+  when:
+    - ansible_facts['os_family'] == 'RedHat'
+    - ansible_facts['distribution'] != 'RedHat'
 
-- name: Rkhunter | install tool from repo
-  package:
+- name: Rkhunter | Install the tool
+  ansible.builtin.package:
     name: rkhunter
     state: present
-    update_cache: true
 
-- name: Rkhunter | Debian specifics
-  block:
+- name: Rkhunter | Configure the scheduled runs and their reports (Debian)
+  ansible.builtin.lineinfile:
+    path: /etc/default/rkhunter
+    regexp: "^{{ item.key }}="
+    line: '{{ item.key }}="{{ item.value }}"'
+  loop:
+    - { key: CRON_DAILY_RUN, value: "true" }
+    - { key: CRON_DB_UPDATE, value: "{{ rkhunter_cron_db_update }}" }
+    - { key: REPORT_EMAIL, value: "{{ antirootkits_mail_to }}" }
+  loop_control:
+    label: "{{ item.key }}"
+  when: ansible_facts['os_family'] == 'Debian'
 
-    - name: Rkhunter | enable cron scheduled runs
-      lineinfile:
-        dest: "/etc/default/rkhunter"
-        regexp: "^CRON_DAILY_RUN="
-        line: "CRON_DAILY_RUN=\"true\""
-        state: present
+- name: Rkhunter | Configure the scheduled runs and their reports (EL)
+  ansible.builtin.lineinfile:
+    path: /etc/sysconfig/rkhunter
+    regexp: "^{{ item.key }}="
+    line: "{{ item.key }}={{ item.value }}"
+  loop:
+    - { key: DIAG_SCAN, value: "{{ antirootkits_rkhunter_diag_scan }}" }
+    - { key: MAILTO, value: "{{ antirootkits_mail_to }}" }
+  loop_control:
+    label: "{{ item.key }}"
+  when: ansible_facts['os_family'] == 'RedHat'
 
-    - name: Rkhunter | enable weekly database updates
-      lineinfile:
-        dest: "/etc/default/rkhunter"
-        regexp: "^CRON_DB_UPDATE="
-        line: "CRON_DB_UPDATE=\"{{ rkhunter_cron_db_update }}\""
-        state: present
+- name: Rkhunter | Configure the scanner
+  ansible.builtin.lineinfile:
+    path: /etc/rkhunter.conf
+    regexp: "^#?{{ item.key }}="
+    line: "{{ item.key }}={{ item.value }}"
+  loop:
+    - key: PKGMGR
+      value: "{{ 'DPKG' if ansible_facts['os_family'] == 'Debian' else 'RPM' }}"
+    - { key: MAIL-ON-WARNING, value: "{{ antirootkits_mail_to }}" }
+    - { key: ALLOW_SSH_ROOT_USER, value: "{{ rkhunter_allow_ssh_root_user }}" }
+  loop_control:
+    label: "{{ item.key }}"
 
-    - name: Rkhunter | setup receiver email address for reports
-      lineinfile:
-        dest: "/etc/default/rkhunter"
-        regexp: "^REPORT_EMAIL="
-        line: "REPORT_EMAIL=\"{{ antirootkits_mail_to }}\""
-        state: present
-
-    - name: Rkhunter | set package manager as DPKG
-      lineinfile:
-        dest: "/etc/rkhunter.conf"
-        regexp: "(^$|^#)PKGMGR="
-        line: "PKGMGR=DPKG"
-        state: present
-
-  when: ansible_os_family == "Debian"
-
-- name: Rkhunter | RedHat specifics
-  block:
-
-    - name: Rkhunter | setup report scan level
-      lineinfile:
-        dest: "/etc/sysconfig/rkhunter"
-        regexp: "^DIAG_SCAN="
-        line: "DIAG_SCAN=\"{{ antirootkits_rkhunter_diag_scan }}\""
-        state: present
-
-    - name: Rkhunter | setup receiver email address for reports
-      lineinfile:
-        dest: "/etc/sysconfig/rkhunter"
-        regexp: "^MAILTO="
-        line: "MAILTO=\"{{ antirootkits_mail_to }}\""
-        state: present
-
-    - name: Rkhunter | set package manager as RPM
-      lineinfile:
-        dest: "/etc/rkhunter.conf"
-        regexp: "(^$|^#)PKGMGR="
-        line: "PKGMGR=RPM"
-        state: present
-
-  when: ansible_os_family == "RedHat"
-
-- name: Rkhunter | enable receiver email address for warnings
-  lineinfile:
-    dest: "/etc/rkhunter.conf"
-    regexp: "^#MAIL-ON-WARNING="
-    line: "MAIL-ON-WARNING=\"{{ antirootkits_mail_to }}\""
+# Debian 12 and Ubuntu 24.04 quote this value, which makes rkhunter reject its
+# own configuration ("Relative pathname"). Debian 13 fixed it like this.
+- name: Rkhunter | Fix the quoted WEB_CMD of Debian 12 and Ubuntu 24.04
+  ansible.builtin.lineinfile:
+    path: /etc/rkhunter.conf
+    regexp: '^WEB_CMD="/bin/false"$'
+    line: WEB_CMD=/bin/false
     backrefs: true
-    state: present
+  when: ansible_facts['os_family'] == 'Debian'
 
-- name: Rkhunter | remove void receiver email address for warnings (if present)
-  lineinfile:
-    dest: "/etc/rkhunter.conf"
-    regexp: "^MAIL-ON-WARNING=\"\"$"
-    state: absent
-
-- name: Rkhunter | setup receiver email address for warnings
-  lineinfile:
-    dest: "/etc/rkhunter.conf"
-    regexp: "^MAIL-ON-WARNING="
-    line: "MAIL-ON-WARNING=\"{{ antirootkits_mail_to }}\""
-    state: present
-
-- name: Rkhunter | setup attended root ssh access
-  lineinfile:
-    dest: "/etc/rkhunter.conf"
-    regexp: "^ALLOW_SSH_ROOT_USER="
-    line: "ALLOW_SSH_ROOT_USER={{ rkhunter_allow_ssh_root_user }}"
-    state: present
-
-- name: Rkhunter | whitelist /dev/shm/network/ifstate
-  lineinfile:
-    dest: "/etc/rkhunter.conf"
+- name: Rkhunter | Allow the network state file in /dev/shm
+  ansible.builtin.lineinfile:
+    path: /etc/rkhunter.conf
     insertafter: "^#ALLOWDEVFILE="
-    line: "ALLOWDEVFILE=\"/dev/shm/network/ifstate\""
-    state: present
+    line: ALLOWDEVFILE="/dev/shm/network/ifstate"
 
-- name: Rkhunter | run propupd
-  command: /usr/bin/rkhunter --propupd
+- name: Rkhunter | Check the configuration
+  ansible.builtin.command: rkhunter --config-check
+  changed_when: false
+
+- name: Rkhunter | Create the file properties database
+  ansible.builtin.command: rkhunter --propupd
   args:
     creates: /var/lib/rkhunter/db/rkhunter.dat

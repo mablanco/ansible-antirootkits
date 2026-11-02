@@ -1,0 +1,12 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: false
+  tasks:
+    # adduser comes with any real Debian or Ubuntu system, but not with the
+    # minimal container images, and rkhunter's default configuration expects it
+    - name: Install Python and adduser on Debian and Ubuntu
+      ansible.builtin.raw: >-
+        command -v python3 || (apt-get update && apt-get install -y python3 adduser)
+      register: prepare_python
+      changed_when: "'python3' not in prepare_python.stdout"

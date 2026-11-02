@@ -1,0 +1,8 @@
+---
+profile: production
+exclude_paths:
+  - .github/
+skip_list:
+  # The tool switches (rkhunter, chkrootkit, unhide) and their settings keep
+  # their original names, so that existing playbooks keep working
+  - var-naming[no-role-prefix]

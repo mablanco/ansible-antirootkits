@@ -1,0 +1,20 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Install Python, adduser and chkrootkit
+      ansible.builtin.raw: >-
+        command -v python3 ||
+        (apt-get update && apt-get install -y python3 adduser chkrootkit)
+      register: prepare_packages
+      changed_when: "'python3' not in prepare_packages.stdout"
+
+    - name: Install the daily job of older versions of the role
+      ansible.builtin.copy:
+        dest: /etc/cron.daily/chkrootkit
+        mode: "0755"
+        content: |
+          #!/bin/sh
+          ) | grep -q 'INFECTED|Vulnerable' &&
+          /usr/sbin/sendmail $REPORT_EMAIL
